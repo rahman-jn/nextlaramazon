@@ -18,8 +18,6 @@ class ProductController extends Controller
         return $products;
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -39,7 +37,16 @@ class ProductController extends Controller
      */
     public function show($slug)
     {
-        return $product = Product::whereSlug($slug)->first();
+        //
+    }
+
+    public function info()
+    {
+        $products = Product::whereActive(1)->get();
+        return $products;
+        
+        $product = Products::whereSlug($slug)->findOne();
+        return $product;
     }
 
     /**

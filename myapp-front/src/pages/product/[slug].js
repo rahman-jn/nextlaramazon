@@ -1,6 +1,8 @@
 import React from 'react'
+import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import Image from 'next/image'
+import data from '../../utils/data'
 import {
     Typography,
     Link,
@@ -10,16 +12,19 @@ import {
     Card,
     Button,
 } from '@mui/material'
-import config from '../../../config/main'
 import AppLayout from '../../components/Layouts/AppLayout'
 import useStyles from '../../utils/styles'
+import products from '../../utils/data'
 
-export default function Product({ product }) {
+
+export default function Product({products}) {
+    console.log("ppp")
     const classes = useStyles()
-    //const router = useRouter()
-    //const { slug } = router.query
-    //const product = product.find(item => item.slug === slug)
-    if (!product) return 'Page Not found'
+    const router = useRouter()
+    const { slug } = router.query
+    
+    const product = products.find(item => item.slug === slug)
+    if (!product) return 'Page Not found!'
     return (
         <AppLayout title={product.name} description={product.description}>
             <NextLink href="/" passHref>
@@ -32,7 +37,7 @@ export default function Product({ product }) {
             <Grid container spacing={1}>
                 <Grid item md={6} xs={12}>
                     <Image
-                        src={config.backendUrl + product.image}
+                        src={product.image}
                         alt={product.name}
                         width={640}
                         height={640}
@@ -114,13 +119,4 @@ export default function Product({ product }) {
             </Grid>
         </AppLayout>
     )
-}
-
-export async function getServerSideProps({ query }) {
-    const slug = query.slug
-    // Fetch data from external API
-    const res = await fetch(`${config.backendUrl}api/product/${slug}`)
-    const product = await res.json()
-    // Pass data to the page via props
-    return { props: { product } }
 }

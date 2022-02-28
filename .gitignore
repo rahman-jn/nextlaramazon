@@ -41,4 +41,5 @@ yarn-error.log*
 /laravel-backend/node_modules/
 /laravel-backend/storage/
 /laravel-backend/.env
+/laravel-backend/.env.local
 

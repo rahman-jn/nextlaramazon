@@ -1,4 +1,6 @@
+import React, { useContext } from 'react'
 import AppLayout from '../components/Layouts/AppLayout'
+import { useRouter } from 'next/router'
 import NextLink from 'next/link'
 import {
     Grid,
@@ -12,9 +14,19 @@ import {
     Link,
 } from '@mui/material'
 import config from '../../config/main'
-import products from '../utils/data'
+import { Store } from '@/utils/Store'
 
 export default function Home({ products }) {
+    const { state, dispatch } = useContext(Store)
+    const router = useRouter()
+    const addToCartHandler = product => {
+        const currentItem = state.cart.cartItems.find(
+            item => item.id === product.id,
+        )
+        const quantity = currentItem ? currentItem.quantity + 1 : 1
+        dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } })
+        router.push('/cart')
+    }
     return (
         <AppLayout>
             <div>
@@ -47,8 +59,13 @@ export default function Home({ products }) {
                                 </NextLink>
                                 <CardActions>
                                     <Typography>${product.price}</Typography>
-                                    <Button size="small" color="primary">
-                                        Add to cart
+                                    <Button
+                                        size="small"
+                                        color="primary"
+                                        onClick={() =>
+                                            addToCartHandler(product)
+                                        }>
+                                        <Typography>Add to cart</Typography>
                                     </Button>
                                 </CardActions>
                             </Card>

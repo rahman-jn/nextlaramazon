@@ -41,7 +41,6 @@ function reducer(state, action) {
             const newCartItems = state.cart.cartItems.filter(
                 item => item.id !== toRemove.id,
             )
-            console.log(toRemove)
             Cookies.set('cartItems', JSON.stringify(newCartItems))
 
             return {

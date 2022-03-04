@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
-import {useRouter} from 'next/router'
+import { useRouter } from 'next/router'
 import {
     Typography,
     Link,
@@ -18,12 +18,16 @@ import useStyles from '../../utils/styles'
 
 export default function Product({ product }) {
     const classes = useStyles()
-    const { dispatch } = useContext(Store)
+    const { state, dispatch } = useContext(Store)
     const router = useRouter()
     //const { slug } = router.query
     //const product = product.find(item => item.slug === slug)
     const addToCartHandler = () => {
-        dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } })
+        const currentItem = state.cart.cartItems.find(
+            item => item.id === product.id,
+        )
+        const quantity = currentItem ? currentItem.quantity + 1 : 1
+        dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } })
         router.push('/cart')
     }
 
@@ -134,7 +138,6 @@ export async function getServerSideProps(context) {
     // Pass data to the page via props
     return { props: { product } }
 }
-
 
 // export async function getServerSideProps({ query }) {
 //     const slug = query.slug

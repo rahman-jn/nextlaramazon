@@ -17,6 +17,7 @@ import {
     ListItem,
 } from '@mui/material'
 import NextLink from 'next/link'
+import axios from 'axios'
 import dynamic from 'next/dynamic'
 import { Store } from '../utils/Store'
 //import Cookies from 'js-cookie'
@@ -25,10 +26,28 @@ import config from '@/../config/main'
 import { Card } from '@material-ui/core'
 
 function Cart() {
-    const { state } = useContext(Store)
+    const { state, dispatch } = useContext(Store)
     const {
         cart: { cartItems },
     } = state
+
+    //Update quqntity of selected product in states when user changed the quantity
+    const updateQuantityHandler = (item, quantity) => {
+        //Sanity check with server
+        const product = axios.get(
+            config.backendUrl + `api/product/${item.slug}`,
+        )
+        if (product.countInStock === 0) {
+            window.alert('Sorry! this request is ut of stock')
+            return
+        }
+        //Update the state and cookies
+        dispatch({ type: 'ADD_TO_CART', payload: { ...item, quantity } })
+    }
+    //Remove product from cart
+    const removeItemHandler = item => {
+        dispatch({ type: 'REMOVE_FROM_CART', payload: item })
+    }
     //Cookies.remove('cartItems')
     return (
         <AppLayout title="Shopping Cart">
@@ -77,7 +96,14 @@ function Cart() {
                                             </TableCell>
                                             <TableCell>{item.name}</TableCell>
                                             <TableCell>
-                                                <Select value={item.quantity}>
+                                                <Select
+                                                    value={item.quantity}
+                                                    onChange={e =>
+                                                        updateQuantityHandler(
+                                                            item,
+                                                            e.target.value,
+                                                        )
+                                                    }>
                                                     {[
                                                         ...Array(
                                                             item.countInStock,
@@ -95,7 +121,10 @@ function Cart() {
                                             <TableCell>
                                                 <Button
                                                     variant="contained"
-                                                    color="secondary">
+                                                    color="secondary"
+                                                    onClick={() =>
+                                                        removeItemHandler(item)
+                                                    }>
                                                     x
                                                 </Button>
                                             </TableCell>

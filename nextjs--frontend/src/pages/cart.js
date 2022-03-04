@@ -17,13 +17,14 @@ import {
     ListItem,
 } from '@mui/material'
 import NextLink from 'next/link'
+import dynamic from 'next/dynamic'
 import { Store } from '../utils/Store'
 //import Cookies from 'js-cookie'
 import Image from 'next/image'
 import config from '@/../config/main'
 import { Card } from '@material-ui/core'
 
-export default function Cart() {
+function Cart() {
     const { state } = useContext(Store)
     const {
         cart: { cartItems },
@@ -129,3 +130,5 @@ export default function Cart() {
         </AppLayout>
     )
 }
+
+export default dynamic(() => Promise.resolve(Cart), { ssr: false })

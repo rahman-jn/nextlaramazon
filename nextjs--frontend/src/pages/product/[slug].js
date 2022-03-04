@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import NextLink from 'next/link'
 import Image from 'next/image'
+import {useRouter} from 'next/router'
 import {
     Typography,
     Link,
@@ -10,15 +11,22 @@ import {
     Card,
     Button,
 } from '@mui/material'
+import { Store } from '../../utils/Store'
 import config from '../../../config/main'
 import AppLayout from '../../components/Layouts/AppLayout'
 import useStyles from '../../utils/styles'
 
 export default function Product({ product }) {
     const classes = useStyles()
-    //const router = useRouter()
+    const { dispatch } = useContext(Store)
+    const router = useRouter()
     //const { slug } = router.query
     //const product = product.find(item => item.slug === slug)
+    const addToCartHandler = () => {
+        dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity: 1 } })
+        router.push('/cart')
+    }
+
     if (!product) return 'Page Not found'
     return (
         <AppLayout title={product.name} description={product.description}>
@@ -102,7 +110,8 @@ export default function Product({ product }) {
                                         <Button
                                             fullWidth
                                             variant="contained"
-                                            color="primary">
+                                            color="primary"
+                                            onClick={addToCartHandler}>
                                             <Typography>Add to cart</Typography>
                                         </Button>
                                     </Grid>
@@ -116,11 +125,22 @@ export default function Product({ product }) {
     )
 }
 
-export async function getServerSideProps({ query }) {
-    const slug = query.slug
+export async function getServerSideProps(context) {
+    const { params } = context
+    const { slug } = params
     // Fetch data from external API
     const res = await fetch(`${config.backendUrl}api/product/${slug}`)
     const product = await res.json()
     // Pass data to the page via props
     return { props: { product } }
 }
+
+
+// export async function getServerSideProps({ query }) {
+//     const slug = query.slug
+//     // Fetch data from external API
+//     const res = await fetch(`${config.backendUrl}api/product/${slug}`)
+//     const product = await res.json()
+//     // Pass data to the page via props
+//     return { props: { product } }
+// }

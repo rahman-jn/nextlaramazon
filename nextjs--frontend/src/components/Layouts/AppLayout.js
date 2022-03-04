@@ -10,6 +10,7 @@ import {
     ThemeProvider,
     CssBaseline,
     Switch,
+    Badge,
 } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 import useStyles from '../../utils/styles'
@@ -20,7 +21,7 @@ import Cookies from 'js-cookie'
 export default function AppLayout({ children, title, description }) {
     const classes = useStyles()
     const { state, dispatch } = useContext(Store)
-    const { darkMode } = state
+    const { darkMode, cart } = state
     //console.log(db);
 
     const darkModeChangeHandler = () => {
@@ -40,7 +41,6 @@ export default function AppLayout({ children, title, description }) {
                 fontWeight: 400,
                 margin: '1rem, 0',
             },
-
         },
         palette: {
             mode: darkMode ? 'dark' : 'light',
@@ -75,12 +75,24 @@ export default function AppLayout({ children, title, description }) {
                         </NextLink>
                         <div className={classes.grow}></div>
                         <div>
-                            <Switch onChange={darkModeChangeHandler}></Switch>
+                            <Switch onChange={darkModeChangeHandler} />
                             <NextLink href="/profile" passHtref>
                                 <Link>Login</Link>
                             </NextLink>
                             <NextLink href="/cart" passHref>
-                                <Link>Cart</Link>
+                                <Link>
+                                    {cart.cartItems.length > 0 ? (
+                                        <Badge
+                                            color="secondary"
+                                            badgeContent={
+                                                cart.cartItems.length
+                                            }>
+                                            Cart
+                                        </Badge>
+                                    ) : (
+                                        ''
+                                    )}
+                                </Link>
                             </NextLink>
                         </div>
                     </Toolbar>

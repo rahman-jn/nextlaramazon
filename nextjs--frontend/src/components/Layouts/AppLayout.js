@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import Head from 'next/head'
 import NextLink from 'next/link'
+import { useAuth } from '@/hooks/auth'
 import {
     Container,
     AppBar,
@@ -11,6 +12,7 @@ import {
     CssBaseline,
     Switch,
     Badge,
+    Button,
 } from '@mui/material'
 import { createTheme } from '@mui/material/styles'
 import useStyles from '../../utils/styles'
@@ -22,7 +24,7 @@ export default function AppLayout({ children, title, description }) {
     const classes = useStyles()
     const { state, dispatch } = useContext(Store)
     const { darkMode, cart } = state
-    //console.log(db);
+    const { login, logout, user } = useAuth()
 
     const darkModeChangeHandler = () => {
         dispatch({ type: darkMode ? 'DARK_MODE_OFF' : 'DARK_MODE_ON' })
@@ -76,9 +78,15 @@ export default function AppLayout({ children, title, description }) {
                         <div className={classes.grow}></div>
                         <div>
                             <Switch onChange={darkModeChangeHandler} />
-                            <NextLink href="/profile" passHtref>
-                                <Link>Login</Link>
-                            </NextLink>
+
+                            {user ? (
+                                <Button onClick={logout}>Logout</Button>
+                            ) : (
+                                <NextLink href="/auth/login" passHtref>
+                                    <Link>Login</Link>
+                                </NextLink>
+                            )}
+
                             <NextLink href="/cart" passHref>
                                 <Link>
                                     {cart.cartItems.length > 0 ? (
@@ -87,7 +95,7 @@ export default function AppLayout({ children, title, description }) {
                                             badgeContent={
                                                 cart.cartItems.length
                                             }>
-                                            Cart
+                                            {' '} Cart
                                         </Badge>
                                     ) : (
                                         ''

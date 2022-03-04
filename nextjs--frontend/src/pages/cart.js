@@ -151,6 +151,16 @@ function Cart() {
                                         )}
                                     </Typography>
                                 </ListItem>
+                                <ListItem>
+                                    <Button
+                                        variant="contained"
+                                        fullwidth
+                                        color="primary">
+                                        <NextLink href="/shipping" passHref>
+                                            <Link>Checkout</Link>
+                                        </NextLink>
+                                    </Button>
+                                </ListItem>
                             </List>
                         </Card>
                     </Grid>

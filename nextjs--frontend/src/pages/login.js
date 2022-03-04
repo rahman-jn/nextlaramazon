@@ -16,7 +16,7 @@ const Login = () => {
 
     const { login } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: '/',
     })
 
     const [email, setEmail] = useState('')
@@ -44,7 +44,7 @@ const Login = () => {
                 logo={
                     <Link href="/">
                         <a>
-                            <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
+                            <ApplicationLogo className="w-20 h-20 text-gray-500 fill-current" />
                         </a>
                     </Link>
                 }>
@@ -64,7 +64,7 @@ const Login = () => {
                             id="email"
                             type="email"
                             value={email}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event => setEmail(event.target.value)}
                             required
                             autoFocus
@@ -79,7 +79,7 @@ const Login = () => {
                             id="password"
                             type="password"
                             value={password}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event => setPassword(event.target.value)}
                             required
                             autoComplete="current-password"
@@ -95,7 +95,7 @@ const Login = () => {
                                 id="remember_me"
                                 type="checkbox"
                                 name="remember"
-                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                className="text-indigo-600 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                             />
 
                             <span className="ml-2 text-sm text-gray-600">
@@ -106,7 +106,7 @@ const Login = () => {
 
                     <div className="flex items-center justify-end mt-4">
                         <Link href="/forgot-password">
-                            <a className="underline text-sm text-gray-600 hover:text-gray-900">
+                            <a className="text-sm text-gray-600 underline hover:text-gray-900">
                                 Forgot your password?
                             </a>
                         </Link>

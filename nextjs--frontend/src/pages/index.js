@@ -1,4 +1,5 @@
 import React, { useContext } from 'react'
+import axios from 'axios'
 import AppLayout from '../components/Layouts/AppLayout'
 import { useRouter } from 'next/router'
 import NextLink from 'next/link'
@@ -19,11 +20,20 @@ import { Store } from '@/utils/Store'
 export default function Home({ products }) {
     const { state, dispatch } = useContext(Store)
     const router = useRouter()
-    const addToCartHandler = product => {
-        const currentItem = state.cart.cartItems.find(
+
+    const addToCartHandler = async product => {
+        const currentItem = axios.get(
+            config.backendUrl + `api/product/${product.slug}`,
+        )
+        if (currentItem.countInStock === 0) {
+            window.alert('Sorry! this request is ut of stock')
+            return
+        }
+        const existItem = state.cart.cartItems.find(
             item => item.id === product.id,
         )
-        const quantity = currentItem ? currentItem.quantity + 1 : 1
+
+        const quantity = existItem ? existItem.quantity + 1 : 1
         dispatch({ type: 'ADD_TO_CART', payload: { ...product, quantity } })
         router.push('/cart')
     }

@@ -12,7 +12,7 @@ import { useState } from 'react'
 const Register = () => {
     const { register } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: '/',
     })
 
     const [name, setName] = useState('')
@@ -33,7 +33,7 @@ const Register = () => {
                 logo={
                     <Link href="/">
                         <a>
-                            <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
+                            <ApplicationLogo className="w-20 h-20 text-gray-500 fill-current" />
                         </a>
                     </Link>
                 }>
@@ -50,7 +50,7 @@ const Register = () => {
                             id="name"
                             type="text"
                             value={name}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event => setName(event.target.value)}
                             required
                             autoFocus
@@ -65,7 +65,7 @@ const Register = () => {
                             id="email"
                             type="email"
                             value={email}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event => setEmail(event.target.value)}
                             required
                         />
@@ -79,7 +79,7 @@ const Register = () => {
                             id="password"
                             type="password"
                             value={password}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event => setPassword(event.target.value)}
                             required
                             autoComplete="new-password"
@@ -96,7 +96,7 @@ const Register = () => {
                             id="password_confirmation"
                             type="password"
                             value={password_confirmation}
-                            className="block mt-1 w-full"
+                            className="block w-full mt-1"
                             onChange={event =>
                                 setPasswordConfirmation(event.target.value)
                             }
@@ -106,7 +106,7 @@ const Register = () => {
 
                     <div className="flex items-center justify-end mt-4">
                         <Link href="/login">
-                            <a className="underline text-sm text-gray-600 hover:text-gray-900">
+                            <a className="text-sm text-gray-600 underline hover:text-gray-900">
                                 Already registered?
                             </a>
                         </Link>

@@ -91,14 +91,16 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             .then(response => setStatus(response.data.status))
     }
 
-    const logout = async () => {
+    const logout = async redirectIfUnAuthenticated => {
         if (!error) {
             await axios.post('/logout')
 
             revalidate()
         }
 
-        window.location.pathname = '/login'
+        window.location.pathname = redirectIfUnAuthenticated
+            ? redirectIfUnAuthenticated
+            : '/login'
     }
 
     useEffect(() => {

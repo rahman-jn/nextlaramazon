@@ -8,6 +8,9 @@ const initialState = {
         cartItems: Cookies.get('cartItems')
             ? JSON.parse(Cookies.get('cartItems'))
             : [],
+        shippingAddress: Cookies.get('shippingAddress')
+            ? JSON.parse(Cookies.get('shippingAddress'))
+            : {},
     },
 }
 
@@ -46,6 +49,13 @@ function reducer(state, action) {
             return {
                 ...state,
                 cart: { ...state.cart, cartItems: newCartItems },
+            }
+        case 'ADD_SHIPPING_ADDRESS':
+            const shippingAddress = action.payload
+            Cookies.set('shippingAddress', JSON.stringify(shippingAddress))
+            return {
+                ...state,
+                cart: { ...state.cart, shippingAddress },
             }
         default:
             return state

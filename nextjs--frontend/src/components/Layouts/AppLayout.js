@@ -28,7 +28,7 @@ export default function AppLayout({ children, title, description }) {
     const { darkMode, cart } = state
     const { login, logout, user } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/',
+        //redirectIfAuthenticated: '/',
     })
     const [anchorEl, setAnchorEl] = useState(null)
     //Open menu after click on username

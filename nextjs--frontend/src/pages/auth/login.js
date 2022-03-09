@@ -6,11 +6,13 @@ import Button from '@/components/Button'
 import GuestLayout from '@/components/Layouts/GuestLayout'
 import Input from '@/components/Input'
 import Label from '@/components/Label'
-import Link from 'next/link'
+import NextLink from 'next/link'
+import { Link } from '@mui/material'
 import { useAuth } from '@/hooks/auth'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import AppLayout from '../../components/Layouts/AppLayout'
+import { Typography } from '@material-ui/core'
 
 const Login = () => {
     const router = useRouter()
@@ -106,6 +108,14 @@ const Login = () => {
                     <Button className="ml-3">Login</Button>
                 </div>
             </form>
+            <div className="block mt-4">
+                <Typography>
+                    Don't have account yet?,
+                    <NextLink href="/auth/register" passHref>
+                        <Link>Register Now</Link>
+                    </NextLink>
+                </Typography>
+            </div>
         </AppLayout>
     )
 }

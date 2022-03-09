@@ -2,6 +2,7 @@ import useSWR from 'swr'
 import axios from '@/lib/axios'
 import { useEffect } from 'react'
 import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
 
 export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     const router = useRouter()
@@ -96,6 +97,8 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             await axios.post('/logout')
 
             revalidate()
+            Cookies.remove('cartItems')
+
         }
 
         window.location.pathname = redirectIfUnAuthenticated

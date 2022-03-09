@@ -2,7 +2,7 @@ import ApplicationLogo from '@/components/ApplicationLogo'
 import AuthCard from '@/components/AuthCard'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import Button from '@/components/Button'
-import GuestLayout from '@/components/Layouts/GuestLayout'
+import AppLayout from '@/components/Layouts/AppLayout'
 import Input from '@/components/Input'
 import Label from '@/components/Label'
 import Link from 'next/link'
@@ -28,16 +28,16 @@ const Register = () => {
     }
 
     return (
-        <GuestLayout>
+        <AppLayout>
             <AuthCard
-                logo={
-                    <Link href="/">
-                        <a>
-                            <ApplicationLogo className="w-20 h-20 text-gray-500 fill-current" />
-                        </a>
-                    </Link>
-                }>
-
+            // logo={
+            //     <Link href="/">
+            //         <a>
+            //             <ApplicationLogo className="w-20 h-20 text-gray-500 fill-current" />
+            //         </a>
+            //     </Link>
+            // }
+            >
                 {/* Validation Errors */}
                 <AuthValidationErrors className="mb-4" errors={errors} />
 
@@ -115,7 +115,7 @@ const Register = () => {
                     </div>
                 </form>
             </AuthCard>
-        </GuestLayout>
+        </AppLayout>
     )
 }
 

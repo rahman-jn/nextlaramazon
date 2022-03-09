@@ -4,12 +4,13 @@ import AuthSessionStatus from '@/components/AuthSessionStatus'
 import AuthValidationErrors from '@/components/AuthValidationErrors'
 import Button from '@/components/Button'
 import GuestLayout from '@/components/Layouts/GuestLayout'
-import Input from '@/components/Input'
+import { useForm, Controller } from 'react-hook-form'
 import Label from '@/components/Label'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/auth'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { TextField, ListItem } from '@mui/material'
 
 const Login = () => {
     const router = useRouter()
@@ -48,7 +49,6 @@ const Login = () => {
                         </a>
                     </Link>
                 }>
-
                 {/* Session Status */}
                 <AuthSessionStatus className="mb-4" status={status} />
 
@@ -57,34 +57,55 @@ const Login = () => {
 
                 <form onSubmit={submitForm}>
                     {/* Email Address */}
-                    <div>
-                        <Label htmlFor="email">Email</Label>
-
-                        <Input
-                            id="email"
-                            type="email"
-                            value={email}
-                            className="block w-full mt-1"
-                            onChange={event => setEmail(event.target.value)}
-                            required
-                            autoFocus
-                        />
-                    </div>
+                    <List>
+                        <ListItem>
+                            <Controller
+                                name="email"
+                                control={control}
+                                defaultValue=""
+                                rules={{
+                                    required: true,
+                                    pattern: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                                }}
+                                render={field => (
+                                    <TextField
+                                        id="email"
+                                        type="email"
+                                        label="email"
+                                        value={email}
+                                        className="block w-full mt-1"
+                                        inputProps={{ type: 'email' }}
+                                        error={Boolean(errors.email)}
+                                        helperText={
+                                            errors.email
+                                                ? errors.email.type ===
+                                                  'pattern'
+                                                    ? 'Email i not valid'
+                                                    : 'Email is required'
+                                                : ''
+                                        }
+                                        onChange={event =>
+                                            setEmail(event.target.value)
+                                        }
+                                        required
+                                        autoFocus>
+                                        {...field}
+                                    </TextField>
+                                )}
+                            />
+                        </ListItem>
+                    </List>
 
                     {/* Password */}
-                    <div className="mt-4">
-                        <Label htmlFor="password">Password</Label>
-
-                        <Input
-                            id="password"
-                            type="password"
-                            value={password}
-                            className="block w-full mt-1"
-                            onChange={event => setPassword(event.target.value)}
-                            required
-                            autoComplete="current-password"
-                        />
-                    </div>
+                    <TextField
+                        id="password"
+                        type="password"
+                        value={password}
+                        className="block w-full mt-1"
+                        onChange={event => setPassword(event.target.value)}
+                        required
+                        autoComplete="current-password"
+                    />
 
                     {/* Remember Me */}
                     <div className="block mt-4">

@@ -33,7 +33,7 @@ export default function shipping() {
         })
 
 
-        //router.push('/payment')
+        router.push('/payment')
     }
     useEffect(() => {
         //if (!user) router.push('/auth/login')

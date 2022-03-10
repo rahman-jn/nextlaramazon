@@ -9,7 +9,7 @@ import CheckoutWizard from '@/components/checkoutWizard'
 import Cookies from 'js-cookie'
 import { Store } from '@/utils/Store'
 
-export default function shipping() {
+export default function Shipping() {
     const router = useRouter()
     const { user } = useAuth()
     const { state, dispatch } = useContext(Store)
@@ -36,7 +36,7 @@ export default function shipping() {
         router.push('/payment')
     }
     useEffect(() => {
-        //if (!user) router.push('/auth/login')
+        if (!user) router.push('/auth/login')
         const {
             cart: { shippingAddress },
         } = state

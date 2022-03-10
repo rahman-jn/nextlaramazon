@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import AppLayout from '@/components/Layouts/AppLayout'
 import {
     Typography,
@@ -6,14 +6,37 @@ import {
     FormControlLabel,
     Radio,
     RadioGroup,
+    Button,
 } from '@mui/material'
 import { Store } from '@/utils/Store'
 import { useForm } from 'react-hook-form'
+import { useSnackbar } from 'notistack'
+import { useRouter } from 'next/router'
 
 export default function Payment() {
     const [paymentMethod, setPaymentMethod] = useState('')
     const { handleSubmit } = useForm()
-    const submitHandler = () => {}
+    const { state, dispatch } = useContext(Store)
+    const {
+        cart: { shippingAddress },
+      } = state;
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar()
+    const router = useRouter()
+
+    useEffect(() => {
+        console.log(shippingAddress)
+        if (!state.cart.shippingAddress) router.push('/shipping')
+    }, [])
+
+    const submitHandler = () => {
+        closeSnackbar()
+        if (!paymentMethod)
+            enqueueSnackbar('Payment method is required', { variant: 'error' })
+        else {
+            dispatch({ type: 'SAVE_PAYMENT_METHOD', payload: paymentMethod })
+            router.push('/placeorder')
+        }
+    }
 
     return (
         <AppLayout>
@@ -38,6 +61,9 @@ export default function Payment() {
                             value="cash"
                             control={<Radio />}></FormControlLabel>
                     </RadioGroup>
+                    <Button type="submit" variant="contained" coloe="primary">
+                        Continue
+                    </Button>
                 </FormControl>
             </form>
         </AppLayout>

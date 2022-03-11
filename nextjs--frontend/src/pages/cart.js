@@ -138,7 +138,7 @@ function Cart() {
                         <Card>
                             <List>
                                 <ListItem>
-                                    <Typography variant="h2">
+                                    <Typography variant="h2" component="h2">
                                         Subtotal(
                                         {cartItems.reduce(
                                             (a, c) => a + c.quantity,

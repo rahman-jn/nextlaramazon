@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import AppLayout from '@/components/Layouts/AppLayout'
 import {
     Grid,
@@ -17,155 +17,180 @@ import {
     ListItem,
 } from '@mui/material'
 import NextLink from 'next/link'
-import axios from 'axios'
 import dynamic from 'next/dynamic'
 import { Store } from '../utils/Store'
-//import Cookies from 'js-cookie'
 import Image from 'next/image'
 import config from '@/../config/main'
 import { Card } from '@material-ui/core'
+import { useRouter } from 'next/router'
+import CheckoutWizard from '@/components/checkoutWizard'
 
 function PlaceOrder() {
     const { state, dispatch } = useContext(Store)
+    const router = useRouter()
     const {
-        cart: { cartItems },
+        cart: { cartItems, shippingAddress, paymentMethod },
     } = state
 
-    //Update quqntity of selected product in states when user changed the quantity
-    const updateQuantityHandler = (item, quantity) => {
-        //Sanity check with server
-        const product = axios.get(
-            config.backendUrl + `api/product/${item.slug}`,
-        )
-        if (product.countInStock === 0) {
-            window.alert('Sorry! this request is ut of stock')
-            return
-        }
-        //Update the state and cookies
-        dispatch({ type: 'ADD_TO_CART', payload: { ...item, quantity } })
-    }
-    //Remove product from cart
-    const removeItemHandler = item => {
-        dispatch({ type: 'REMOVE_FROM_CART', payload: item })
-    }
+    const round2 = num => Math.round(num * 100 + Number.EPSILON) / 100 // 123.456 => 123.46
+
+    const itemsPrice = round2(cartItems.reduce((a, c) => a + c.price, 0))
+
+    const taxPrice = round2(itemsPrice * 0.15)
+
+    const shippingPrice = itemsPrice > 200 ? 0 : 15
+
+    const totalPrice = itemsPrice + taxPrice + shippingPrice
+
+    useEffect(() => {
+        if (!state.cart.paymentMethod) router.push('/paymentMethod')
+    }, [])
+
     //Cookies.remove('cartItems')
     return (
         <AppLayout title="Shopping Cart">
-            <Typography component="h1">Shopping cart</Typography>
-            {cartItems.length === 0 ? (
-                <div>
-                    <Typography>Cart is empty</Typography>
-                    <NextLink href="/" passHref>
-                        <Link>
-                            <Typography>Go shopping</Typography>
-                        </Link>
-                    </NextLink>
-                </div>
-            ) : (
-                <Grid container spacing={1}>
-                    <Grid item md={9} xs={12}>
-                        <TableContainer>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Image</TableCell>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Quantity</TableCell>
-                                        <TableCell>Price</TableCell>
-                                        <TableCell>Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {cartItems.map(item => (
-                                        <TableRow key={item.id}>
-                                            <TableCell>
-                                                <NextLink
-                                                    href={`/product/${item.slug}`}
-                                                    passHref>
-                                                    <Link>
-                                                        <Image
-                                                            src={
-                                                                config.backendUrl +
-                                                                item.image
-                                                            }
-                                                            width={50}
-                                                            height={50}
-                                                        />
-                                                    </Link>
-                                                </NextLink>
-                                            </TableCell>
-                                            <TableCell>{item.name}</TableCell>
-                                            <TableCell>
-                                                <Select
-                                                    value={item.quantity}
-                                                    onChange={e =>
-                                                        updateQuantityHandler(
-                                                            item,
-                                                            e.target.value,
-                                                        )
-                                                    }>
-                                                    {[
-                                                        ...Array(
-                                                            item.countInStock,
-                                                        ).keys(),
-                                                    ].map(x => (
-                                                        <MenuItem
-                                                            key={x + 1}
-                                                            value={x + 1}>
-                                                            {x + 1}
-                                                        </MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </TableCell>
-                                            <TableCell>{item.price}</TableCell>
-                                            <TableCell>
-                                                <Button
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    onClick={() =>
-                                                        removeItemHandler(item)
-                                                    }>
-                                                    x
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-                    <Grid item md={3} xs={12}>
+            <CheckoutWizard activeStep={3} alternativeLabel="Shipping" />
+            <Typography component="h1" variant="h1">
+                Place Order
+            </Typography>
+
+            <Grid container spacing={1}>
+                <Grid item md={9} xs={12}>
+                    <List>
                         <Card>
-                            <List>
-                                <ListItem>
-                                    <Typography variant="h2">
-                                        Subtotal(
-                                        {cartItems.reduce(
-                                            (a, c) => a + c.quantity,
-                                            0,
-                                        )}{' '}
-                                        items) : $
-                                        {cartItems.reduce(
-                                            (a, c) => a + c.quantity * c.price,
-                                            0,
-                                        )}
-                                    </Typography>
-                                </ListItem>
-                                <ListItem>
-                                    <Button
-                                        variant="contained"
-                                        fullwidth
-                                        color="primary">
-                                        <NextLink href="/shipping" passHref>
-                                            <Link>Checkout</Link>
-                                        </NextLink>
-                                    </Button>
-                                </ListItem>
-                            </List>
+                            <ListItem>
+                                <Typography component="h2" variant="h2">
+                                    Shipping Address
+                                </Typography>
+                            </ListItem>
+                            <ListItem>
+                                <Typography>
+                                    {shippingAddress.fullName},{' '}
+                                    {shippingAddress.address},{' '}
+                                    {shippingAddress.city},{' '}
+                                    {shippingAddress.country}
+                                </Typography>
+                            </ListItem>
                         </Card>
-                    </Grid>
+                    </List>
+                    <List>
+                        <Card>
+                            <ListItem>
+                                <Typography component="h2" variant="h2">
+                                    Payment Method
+                                </Typography>
+                            </ListItem>
+                            <ListItem>
+                                <Typography>{paymentMethod}</Typography>
+                            </ListItem>
+                        </Card>
+                    </List>
+
+                    <List>
+                        <Card>
+                            <ListItem>
+                                <Typography component="h2" variant="h2">
+                                    Order Items
+                                </Typography>
+                            </ListItem>
+                            <ListItem>
+                                <TableContainer>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Image</TableCell>
+                                                <TableCell>Name</TableCell>
+                                                <TableCell>Quantity</TableCell>
+                                                <TableCell>Price</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {cartItems.map(item => (
+                                                <TableRow key={item.id}>
+                                                    <TableCell>
+                                                        <NextLink
+                                                            href={`/product/${item.slug}`}
+                                                            passHref>
+                                                            <Link>
+                                                                <Image
+                                                                    src={
+                                                                        config.backendUrl +
+                                                                        item.image
+                                                                    }
+                                                                    width={50}
+                                                                    height={50}
+                                                                />
+                                                            </Link>
+                                                        </NextLink>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {item.name}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {item.quantity}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {item.price}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </ListItem>
+                        </Card>
+                    </List>
                 </Grid>
-            )}
+                <Grid item md={3} xs={12}>
+                    <Card>
+                        <List>
+                            <ListItem>
+                                <Typography component="h2" variant="h2">
+                                    Order Summary
+                                </Typography>
+                            </ListItem>
+                            <ListItem>
+                                <Grid container>
+                                    <Grid items xs={6}>
+                                        Items :
+                                    </Grid>
+                                    <Grid items xs={6} align="right">
+                                        ${itemsPrice}
+                                    </Grid>
+                                    <Grid items xs={6}>
+                                        Tax :
+                                    </Grid>
+                                    <Grid items xs={6} align="right">
+                                        ${taxPrice}
+                                    </Grid>
+                                    <Grid items xs={6}>
+                                        Shipping :
+                                    </Grid>
+                                    <Grid items xs={6} align="right">
+                                        ${shippingPrice}
+                                    </Grid>
+                                    <Grid items xs={6}>
+                                        <strong>Total :</strong>
+                                    </Grid>
+                                    <Grid items xs={6} align="right">
+                                        <strong>${totalPrice}</strong>
+                                    </Grid>
+                                </Grid>
+                            </ListItem>
+                            <ListItem>
+                                <Button
+                                    variant="contained"
+                                    fullwidth
+                                    color="primary">
+                                    <NextLink href="/shipping" passHref>
+                                        <Link>Place Order</Link>
+                                    </NextLink>
+                                </Button>
+                            </ListItem>
+                        </List>
+                    </Card>
+                </Grid>
+            </Grid>
         </AppLayout>
     )
 }

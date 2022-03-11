@@ -8,6 +8,7 @@ import {
     RadioGroup,
     Button,
 } from '@mui/material'
+import CheckoutWizard from '@/components/checkoutWizard'
 import { Store } from '@/utils/Store'
 import { useForm } from 'react-hook-form'
 import { useSnackbar } from 'notistack'
@@ -24,7 +25,6 @@ export default function Payment() {
     const router = useRouter()
 
     useEffect(() => {
-        console.log(shippingAddress)
         if (!state.cart.shippingAddress) router.push('/shipping')
     }, [])
 
@@ -40,6 +40,7 @@ export default function Payment() {
 
     return (
         <AppLayout>
+            <CheckoutWizard activeStep={2} alternativeLabel="Shipping" />
             <Typography>Payment</Typography>
             <form onSubmit={handleSubmit(submitHandler)}>
                 <FormControl component="fieldset">

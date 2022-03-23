@@ -32,6 +32,10 @@ return [
     */
 
     'stores' => [
+        //Disable caching for development
+        'none' => [
+            'driver' => 'null',
+        ],
 
         'apc' => [
             'driver' => 'apc',

@@ -16,7 +16,7 @@ class FakeProductSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Product::factory()->count(4)->create(); 
+        \App\Models\Product::factory()->count(8)->create(); 
         // $faker = \Faker\Factory::Create();
         // for($i = 0; $i <= 4; $i++){
         //     \App\Models\Product::create([

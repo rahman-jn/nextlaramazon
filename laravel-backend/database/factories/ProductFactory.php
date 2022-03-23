@@ -27,10 +27,11 @@ class ProductFactory extends Factory
                 'featuredImage' => $this->faker->image,
                 'price' => $this->faker->numerify('###.##'),
                 'brand' => $this->faker->randomElement(['Nike', 'Adidas', 'Majid', 'Spolsh' ]),
-                'rating' => $this->faker->randomFloat(2, 0, 10),
+                'rating' => $this->faker->randomFloat(2,0,10),
                 'numReviews' => $this->faker->randomDigit(),
                 'countInStock' => $this->faker->numberBetween($min = 0, $max = 10),
                 'description' => $this->faker->text,
+                'active' => 1
         ];
     }
 }

@@ -23,12 +23,11 @@ return new class extends Migration
             $table->string('featuredImage');
             $table->float('price', 8, 2);
             $table->char('brand', 100);
-            $table->float('rating', 2, 2);
+            $table->float('rating');
             $table->mediumInteger('numReviews');
             $table->mediumInteger('countInStock');
             $table->mediumText('description');
             $table->tinyInteger('active');
-            
             $table->timestamps();
         });
     }

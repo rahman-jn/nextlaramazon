@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderProductController;
+use App\Http\Controllers\AddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,7 +31,14 @@ Route::get('/country/{slug}', [CountryController::class, 'show']);
 
 Route::get('/city/{slug}', [CityController::class, 'show']);
 
-Route::apiResource('orders', OrderController::class);
+// Route::apiResource('orders', OrderController::class);
 
-Route::apiResource('orderProducts', OrderProductController::class);
+// Route::apiResource('orderProducts', OrderProductController::class);
+
+Route::apiResources([
+    'orders' => OrderController::class,
+    'orderProducts' => OrderProductController::class,
+    'address' => AddressController::class,
+    'orderProducts' => OrderProductController::class
+    ]);
 

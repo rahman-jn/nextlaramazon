@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import AppLayout from '@/components/Layouts/AppLayout'
+import axios from '@/lib/axios'
 import {
     Grid,
     Table,
@@ -23,7 +24,9 @@ import Image from 'next/image'
 import config from '@/../config/main'
 import { Card } from '@material-ui/core'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/auth'
 import CheckoutWizard from '@/components/checkoutWizard'
+import { headers } from '@/../next.config'
 
 function PlaceOrder() {
     const { state, dispatch } = useContext(Store)
@@ -41,6 +44,13 @@ function PlaceOrder() {
     const shippingPrice = itemsPrice > 200 ? 0 : 15
 
     const totalPrice = itemsPrice + taxPrice + shippingPrice
+
+    const handleSubmit = async () => {
+
+        axios.post('http://localhost:8000/api/address', shippingAddress)
+        // const order = { itemsPrice, taxPrice, shippingPrice, totalPrice }
+        // const response = axios.post(config.backendUrl + 'api/order')
+    }
 
     useEffect(() => {
         if (!state.cart.paymentMethod) router.push('/paymentMethod')
@@ -181,10 +191,9 @@ function PlaceOrder() {
                                 <Button
                                     variant="contained"
                                     fullwidth
-                                    color="primary">
-                                    <NextLink href="/shipping" passHref>
-                                        <Link>Place Order</Link>
-                                    </NextLink>
+                                    color="primary"
+                                    onClick={handleSubmit}>
+                                    <Typography>Place Order</Typography>
                                 </Button>
                             </ListItem>
                         </List>

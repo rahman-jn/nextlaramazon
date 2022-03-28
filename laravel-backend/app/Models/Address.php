@@ -11,12 +11,15 @@ class Address extends Model
 
     protected $fillable = [
         'user_id',
-        'countryId',
-        'cityId',
+        'fullname',
+        'country_id',
+        'city_id',
         'address',
-        'postalCode',
+        'postal_code',
         'active'
     ];
+
+
 
     public function country(){
         return $this->hasOne(Country::class);

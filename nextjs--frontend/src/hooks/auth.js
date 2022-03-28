@@ -98,7 +98,6 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
             revalidate()
             Cookies.remove('cartItems')
-
         }
 
         window.location.pathname = redirectIfUnAuthenticated
@@ -120,5 +119,6 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
         resetPassword,
         resendEmailVerification,
         logout,
+        csrf,
     }
 }

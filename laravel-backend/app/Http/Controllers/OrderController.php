@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Http\Requests\OrderRequest;
 
@@ -36,8 +38,21 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-        $storedOrder = Order::create($request->validate());
-        return back()->with('success', 'order crreated');
+        //This method has camelCase to SnakeCase middleware
+        try{
+            //UserId doesn't sent from request.
+            //In this line userId added to request parameters.
+            $requestFields =array_merge(['user_id' => Auth::id()], $request->all());
+            //return $requestFields;
+            $storedOrder = Order::create($requestFields);
+            return $storedOrder->id;
+        }
+        catch(Exception $e){
+            Log::channel('models')->error('Error when trying to insert new order',
+             [Auth::id(), $e->getMessage]);
+             return response()->json($e, 500);
+        }
+        //return back()->with('success', 'order crreated');
     }
 
     /**

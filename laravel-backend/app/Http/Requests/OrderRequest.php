@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Helpers\Constant;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrderRequest extends FormRequest
 {
@@ -16,8 +18,11 @@ class OrderRequest extends FormRequest
      */
     public function authorize()
     {
+        //return true;
         if(!Auth::check())
             return false;
+        
+        return true;
     }
 
     /**
@@ -28,14 +33,14 @@ class OrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|integer',
+            //'user_id' => 'required|integer',
             'address_id' => 'required|integer',
             'items_price' => 'required|numeric',
             'shipping_price' => 'sometimes|numeric',
             'payment_method' => Rule::in(Constant::PAYMENT_METHOD),
             'tax_price' => 'numeric',
-            'total_price' => 'numeric',
-            'status' => 'numeric'
+            'total_Price' => 'numeric',
+            // 'status' => 'numeric'
         ];
     }
 }

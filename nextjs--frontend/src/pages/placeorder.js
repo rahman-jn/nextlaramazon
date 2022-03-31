@@ -46,8 +46,27 @@ function PlaceOrder() {
     const totalPrice = itemsPrice + taxPrice + shippingPrice
 
     const handleSubmit = async () => {
+        const address = await axios.post(
+            'http://localhost:8000/api/address',
+            shippingAddress,
+        )
 
-        axios.post('http://localhost:8000/api/address', shippingAddress)
+        const addressId = address.data
+
+        const orderData = {
+            addressId,
+            paymentMethod,
+            itemsPrice,
+            taxPrice,
+            shippingPrice,
+            totalPrice,
+        }
+        console.log(orderData)
+        const OrderId = await axios.post(
+            'http://localhost:8000/api/orders',
+            orderData,
+        )
+
         // const order = { itemsPrice, taxPrice, shippingPrice, totalPrice }
         // const response = axios.post(config.backendUrl + 'api/order')
     }

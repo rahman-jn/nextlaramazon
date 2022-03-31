@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\Address;
 use App\Models\Country;
 use App\Models\City;
@@ -17,7 +18,7 @@ class AddressController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -38,17 +39,24 @@ class AddressController extends Controller
      */
     public function store(Request $request)
     {
-        $countryId = Country::whereName($request->country)->first()->id;
-        $cityId = City::whereName($request->city)->first()->id;
-        $address = Address::firstOrCreate([
-            'user_id' => Auth::id(),
-            'fullname' => $request->fullName,
-            'country_id' => $countryId,
-            'city_id' => $cityId,
-            'postal_code' => $request->postalCode,
-            'address' => $request->address,
-        ]);
-        dd($address);
+        try{
+            $countryId = Country::whereName($request->country)->firstOrFail()->id;
+            $cityId = City::whereName($request->city)->firstOrFail()->id;
+            $address = Address::firstOrCreate([
+                'user_id' => Auth::id(),
+                'fullname' => $request->fullName,
+                'country_id' => $countryId,
+                'city_id' => $cityId,
+                'postal_code' => $request->postalCode,
+                'address' => $request->address,
+            ]);
+            return $address->id;
+        }
+        catch(Exception $e){
+            Log::channel('models')->error('Error while inerting new address', [Auth::id(), $e->getMessage() ]);
+            return response()->json($e, 500);
+        }
+        
     }
 
     /**

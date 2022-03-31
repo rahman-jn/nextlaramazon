@@ -31,12 +31,11 @@ Route::get('/country/{slug}', [CountryController::class, 'show']);
 
 Route::get('/city/{slug}', [CityController::class, 'show']);
 
-// Route::apiResource('orders', OrderController::class);
+Route::middleware(['camelToSnake'])->apiResource('orders', OrderController::class);
 
 // Route::apiResource('orderProducts', OrderProductController::class);
 
 Route::apiResources([
-    'orders' => OrderController::class,
     'orderProducts' => OrderProductController::class,
     'address' => AddressController::class,
     'orderProducts' => OrderProductController::class

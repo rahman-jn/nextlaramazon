@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    Log::channel('abuse')->info('This is some useful information.');
     return ['Laravel' => app()->version()];
 });
 

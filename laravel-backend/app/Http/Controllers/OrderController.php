@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Order;
 use App\Http\Requests\OrderRequest;
+use Notification;
+use App\Notifications\OrderNotification;
 
 class OrderController extends Controller
 {
@@ -45,6 +47,8 @@ class OrderController extends Controller
             $requestFields =array_merge(['user_id' => Auth::id()], $request->all());
             //return $requestFields;
             $storedOrder = Order::create($requestFields);
+            //Send order confirmation email
+            Notification::send(Auth::user(), new OrderNotification($storedOrder));
             return $storedOrder->id;
         }
         catch(Exception $e){

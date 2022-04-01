@@ -37,7 +37,7 @@ class OrderRequest extends FormRequest
             'address_id' => 'required|integer',
             'items_price' => 'required|numeric',
             'shipping_price' => 'sometimes|numeric',
-            'payment_method' => Rule::in(Constant::PAYMENT_METHOD),
+            //'payment_method' => Rule::in(Constant::PAYMENT_METHOD),
             'tax_price' => 'numeric',
             'total_Price' => 'numeric',
             // 'status' => 'numeric'

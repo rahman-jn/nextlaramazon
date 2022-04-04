@@ -60,6 +60,7 @@ function PlaceOrder() {
             taxPrice,
             shippingPrice,
             totalPrice,
+            cartItems,
         }
         console.log(orderData)
         const OrderId = await axios.post(

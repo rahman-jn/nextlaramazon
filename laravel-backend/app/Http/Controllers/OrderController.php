@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use App\Models\Order;
 use App\Http\Requests\OrderRequest;
 use Notification;
 use App\Notifications\OrderNotification;
+use App\Services\OrderService;
+use App\Models\Order;
+
 
 class OrderController extends Controller
 {
+    private $oredrService;
+
+    public function __construct(OrderService $orderService){
+        $this->orderService = $orderService;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -47,8 +54,12 @@ class OrderController extends Controller
             $requestFields =array_merge(['user_id' => Auth::id()], $request->all());
             //return $requestFields;
             $storedOrder = Order::create($requestFields);
+
+            //In caring of SOLID principles inserting of order products implemented in service class
+            $orderProductsInsertion = $this->orderService->storeOrderProducts($storedOrder->id, $request->all()['cart_items']);
+            return $orderProductsInsertion;
             //Send order confirmation email
-            Notification::send(Auth::user(), new OrderNotification($storedOrder));
+            //Notification::send(Auth::user(), new OrderNotification($storedOrder));
             return $storedOrder->id;
         }
         catch(Exception $e){

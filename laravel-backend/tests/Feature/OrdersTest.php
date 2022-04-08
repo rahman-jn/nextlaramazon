@@ -55,6 +55,12 @@ class OrdersTest extends TestCase
             //else throw new Exception("Error Processing Request", 1);
     }
 
+    public function test_assert_show_method_works(){
+        $order = Order::factory()->create();
+        $response = $this->get('/api/order'.$order->id);
+        $response->assertSee($order->id);
+    }
+
     protected function login_user($email, $password){
         $response = $this->post('/login', [
             'email' => $email,

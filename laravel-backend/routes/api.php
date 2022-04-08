@@ -31,7 +31,7 @@ Route::get('/country/{slug}', [CountryController::class, 'show']);
 
 Route::get('/city/{slug}', [CityController::class, 'show']);
 
-Route::middleware(['camelToSnake'])->apiResource('orders', OrderController::class);
+Route::middleware(['camelToSnake', 'snakeToCamel'])->apiResource('orders', OrderController::class);
 
 // Route::apiResource('orderProducts', OrderProductController::class);
 

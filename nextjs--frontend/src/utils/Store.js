@@ -64,6 +64,9 @@ function reducer(state, action) {
             const paymenMethod = action.payload
             Cookies.set('paymentMethod', paymenMethod)
             return { ...state, paymentMethod: paymenMethod }
+        case 'CART_CLEAR':
+            Cookies.remove('cartItems')
+            return { ...state, cart: { ...state.cart, cartItems: [] } }
         default:
             return state
     }

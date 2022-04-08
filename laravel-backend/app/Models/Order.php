@@ -20,11 +20,17 @@ class Order extends Model
         'status'
     ];
 
+
+
     public function user(){
         return $this->hasOne(User::class);
     }
 
     public function address(){
         $this->hasOne(Address::one);
+    }
+
+    public function orderProducts(){
+        $this->belongsTo(OrderProduct::class);
     }
 }

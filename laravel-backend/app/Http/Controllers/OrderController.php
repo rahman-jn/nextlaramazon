@@ -10,6 +10,8 @@ use Notification;
 use App\Notifications\OrderNotification;
 use App\Services\OrderService;
 use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Product;
 
 
 class OrderController extends Controller
@@ -57,7 +59,6 @@ class OrderController extends Controller
 
             //In caring of SOLID principles inserting of order products implemented in service class
             $orderProductsInsertion = $this->orderService->storeOrderProducts($storedOrder->id, $request->all()['cart_items']);
-            return $orderProductsInsertion;
             //Send order confirmation email
             //Notification::send(Auth::user(), new OrderNotification($storedOrder));
             return $storedOrder->id;
@@ -78,7 +79,13 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
+        $order = Order::find($id)->first();
+        $orderStatus = $this->orderService->orderStatus($order->status);
+        $shippingAddress = $this->orderService->readableAddress($order->address_id);
+        $orderItems = $this->orderService->orderProducts($id);
+        //return $orderItems;
+        $data = collect($order)->merge($orderStatus)->merge($shippingAddress)->merge($orderItems);
+        return $data;
     }
 
     /**

@@ -29,63 +29,38 @@ import CheckoutWizard from '@/components/checkoutWizard'
 import { headers } from '@/../next.config'
 import Cookies from 'js-cookie'
 
-function PlaceOrder() {
-    const { state, dispatch } = useContext(Store)
+function Order({ params }) {
+    const orderId = params.id
+    const { state } = useContext(Store)
     const router = useRouter()
-    const {
-        cart: { cartItems, shippingAddress, paymentMethod },
-    } = state
+    const { user } = useAuth()
 
-    const round2 = num => Math.round(num * 100 + Number.EPSILON) / 100 // 123.456 => 123.46
-
-    const itemsPrice = round2(cartItems.reduce((a, c) => a + c.price, 0))
-
-    const taxPrice = round2(itemsPrice * 0.15)
-
-    const shippingPrice = itemsPrice > 200 ? 0 : 15
-
-    const totalPrice = itemsPrice + taxPrice + shippingPrice
-
-    const handleSubmit = async () => {
-        const address = await axios.post(
-            'http://localhost:8000/api/address',
-            shippingAddress,
-        )
-
-        const addressId = address.data
-
-        const orderData = {
-            addressId,
-            paymentMethod,
-            itemsPrice,
-            taxPrice,
-            shippingPrice,
-            totalPrice,
-            cartItems,
-        }
-
-        const orderId = await axios.post(
-            'http://localhost:8000/api/orders',
-            orderData,
-        )
-
-        dispatch({ type: 'CART_CLEAR' })
-        router.push(`/order/${orderId.data}`)
-
-        // const order = { itemsPrice, taxPrice, shippingPrice, totalPrice }
-        // const response = axios.post(config.backendUrl + 'api/order')
+    const order = async () => {
+        await axios.get(config.backendUrl + `api/orders/${orderId}`)
     }
 
+    const {
+        shippingAddress,
+        paymentMethod,
+        orderItems,
+        itemsPrice,
+        taxPrice,
+        shippingPrice,
+        totalPrice,
+        status
+    } = order
+
     useEffect(() => {
-        if (!state.cart.paymentMethod) router.push('/paymentMethod')
+        //Only authenticated users can see order details
+        if (!user) router.push('/auth/login')
     }, [])
 
     //Cookies.remove('cartItems')
     return (
-        <AppLayout title="Shopping Cart">
+        <AppLayout title={`order ${orderId}`}>
             <CheckoutWizard activeStep={3} alternativeLabel="Shipping" />
             <Typography component="h1" variant="h1">
-                Place Order
+                {`order ${orderId}`}
             </Typography>
 
             <Grid container spacing={1}>
@@ -139,7 +114,7 @@ function PlaceOrder() {
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {cartItems.map(item => (
+                                            {orderItems.map(item => (
                                                 <TableRow key={item.id}>
                                                     <TableCell>
                                                         <NextLink
@@ -211,15 +186,6 @@ function PlaceOrder() {
                                     </Grid>
                                 </Grid>
                             </ListItem>
-                            <ListItem>
-                                <Button
-                                    variant="contained"
-                                    fullwidth
-                                    color="primary"
-                                    onClick={handleSubmit}>
-                                    <Typography>Place Order</Typography>
-                                </Button>
-                            </ListItem>
                         </List>
                     </Card>
                 </Grid>
@@ -228,4 +194,8 @@ function PlaceOrder() {
     )
 }
 
-export default dynamic(() => Promise.resolve(PlaceOrder), { ssr: false })
+export async function getServerSideProps({ params }) {
+    return { props: { params } }
+}
+
+export default dynamic(() => Promise.resolve(Order), { ssr: false })

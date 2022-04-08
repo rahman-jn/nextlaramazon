@@ -25,4 +25,9 @@ class Product extends Model
         'countInStock',
         'description',
     ];
+
+
+    public function OrderProduct(){
+        return $this->belongsTo(OrderProduct::Class);
+    }
 }

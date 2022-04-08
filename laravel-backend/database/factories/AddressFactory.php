@@ -24,6 +24,9 @@ class AddressFactory extends Factory
             'user_id' => function(){
                 return User::factory()->create()->id;
             },
+            
+            'fullname' =>  $this->faker->name(),
+
             'country_id' => function(){
                 return Country::factory()->create()->id;
             },

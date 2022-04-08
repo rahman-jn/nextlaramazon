@@ -2,15 +2,19 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Collection;
+
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Services\AddressService;
+use App\Helpers\Constant;
 
 /**
  * Class OrderService
  * @package App\Services
  */
-class OrderService
+class OrderService extends AddressService
 {
     //Store order products in ordr_product table
     public function storeOrderProducts(int $orderId,array $cartItems){
@@ -35,5 +39,38 @@ class OrderService
         
         return true;
     }
+
+        //Rwadable order status
+        public function orderStatus(int $status) :Collection{
+            // statuses names
+            $statuses = Constant::ORDER_STATUS;
+            //$statuses = $statuses->ORDER_STATUS;
+            switch($status){
+                case 0:
+                    $statusString = $statuses['UNPAYED'];
+                case 1:
+                    $statusString = $statuses['PAYED'];
+                case 2:
+                    $statusString = $statuses['DELIVERED'];
+                case 3:
+                    $statusString = $statuses['SHIPPED'];
+                case 4:
+                    $statusString = $statuses['REJECTED'];
+                default:
+                    $statusString = $statuses['UNPAYED'];
+            }
+            return collect(['status' => $statusString]);
+        }
+
+        //Get order's products name
+        public function orderProducts(int $orderId):Collection{
+            $productIds = OrderProduct::where(['order_id' => $orderId])->get()->pluck('product_id');
+            foreach($productIds as $productId){
+                $product = Product::whereId($productId)->first();
+                $products[$productId] = $product->name;
+            }
+
+            return collect(['orderItems' => $products]);
+        }
 
 }

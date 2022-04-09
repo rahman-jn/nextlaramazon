@@ -1,5 +1,5 @@
 import 'tailwindcss/tailwind.css'
-import { StoreProvider } from '../utils/Store'
+import { StoreProvider } from '@/utils/Store'
 import { SnackbarProvider } from 'notistack'
 
 const App = ({ Component, pageProps }) => (

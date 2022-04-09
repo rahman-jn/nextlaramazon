@@ -14,12 +14,13 @@ use App\Models\City;
 class AddressService
 {
     public function readableAddress(int $addressId):Collection{
-        $address = Address::whereId($addressId)->first();
+        //die("p".$addressId);
+        $address = Address::whereId($addressId)->first();//die(print_r($address));
         $country = Country::whereId($address->country_id)->first();
         $city = City::whereId($address->city_id)->first();
-        $address = $country.', '.$city.', '.$address->address.', '.$address->postal_code;
-
-        return collect(['address' => $address]);
+        $address = array('country' => $country->name, 'city' => $city->name,
+         'address' =>$address->address, 'postalCode' => $address->postal_code, 'fullName' => $address->fullname);
+        return collect(['shippingAddress' => collect($address)]);
     }
 
 }

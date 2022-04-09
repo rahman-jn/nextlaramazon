@@ -15,6 +15,12 @@ const initialState = {
             ? Cookies.get('paymentMethod')
             : '',
     },
+    order: {
+        content: Cookies.get('order')
+            ? JSON.parse(JSON.stringify(Cookies.get('order')))
+            : '',
+        loading: true,
+    },
 }
 
 function reducer(state, action) {
@@ -67,6 +73,11 @@ function reducer(state, action) {
         case 'CART_CLEAR':
             Cookies.remove('cartItems')
             return { ...state, cart: { ...state.cart, cartItems: [] } }
+        case 'ORDER_ITEMS':
+            //console.log("hi")
+            const order = action.payload.response.data
+            Cookies.set('order', order)
+            return { ...state, order: { content: order, loading: false } }
         default:
             return state
     }

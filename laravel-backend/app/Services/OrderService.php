@@ -64,13 +64,20 @@ class OrderService extends AddressService
 
         //Get order's products name
         public function orderProducts(int $orderId):Collection{
-            $productIds = OrderProduct::where(['order_id' => $orderId])->get()->pluck('product_id');
-            foreach($productIds as $productId){
-                $product = Product::whereId($productId)->first();
-                $products[$productId] = $product->name;
+            $orderProducts = OrderProduct::where(['order_id' => $orderId])->get();
+            foreach($orderProducts as $orderProduct){
+                $product = Product::whereId($orderProduct->id)->first();
+                $products[] = array(
+                                    'id' => $product->id,
+                                    'slug' => $product->slug,
+                                    'name' => $product->name,
+                                    'image' => $product->image,
+                                    'quantity' => $orderProduct->quantity,
+                                    'price' => $orderProduct->price
+                                );
             }
 
-            return collect(['orderItems' => $products]);
+            return collect(['orderItems' => collect($products)]);
         }
 
 }

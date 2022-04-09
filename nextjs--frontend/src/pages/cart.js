@@ -19,7 +19,7 @@ import {
 import NextLink from 'next/link'
 import axios from 'axios'
 import dynamic from 'next/dynamic'
-import { Store } from '../utils/Store'
+import { Store } from '@/utils/Store'
 //import Cookies from 'js-cookie'
 import Image from 'next/image'
 import config from '@/../config/main'

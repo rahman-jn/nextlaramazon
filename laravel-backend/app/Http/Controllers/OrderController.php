@@ -12,6 +12,7 @@ use App\Services\OrderService;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\Product;
+use App\Helpers\Helper;
 
 
 class OrderController extends Controller
@@ -79,13 +80,18 @@ class OrderController extends Controller
      */
     public function show($id)
     {
+        
         $order = Order::find($id)->first();
         $orderStatus = $this->orderService->orderStatus($order->status);
+
         $shippingAddress = $this->orderService->readableAddress($order->address_id);
+                //return $shippingAddress;
         $orderItems = $this->orderService->orderProducts($id);
         //return $orderItems;
         $data = collect($order)->merge($orderStatus)->merge($shippingAddress)->merge($orderItems);
-        return $data;
+        $helper = new Helper();
+        $data = collect($helper->CamelKeys($data));
+        return $data->toJson();
     }
 
     /**

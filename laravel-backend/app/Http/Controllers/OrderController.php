@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\OrderRequest;
 use Notification;
 use App\Notifications\OrderNotification;
@@ -79,9 +80,12 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {
-        
+    {        
         $order = Order::find($id)->first();
+        if(!Gate::allows('view-order', $order))
+            abort(403);
+        
+
         $orderStatus = $this->orderService->orderStatus($order->status);
 
         $shippingAddress = $this->orderService->readableAddress($order->address_id);
